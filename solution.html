@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pygame Solution</title>
+</head>
+<body>
+    <p>
+        import pygame
+import pygame.mixer
+pygame.init()
+background_music = pygame.mixer.Sound("background_music.mp3")
+background_music.play(-1) 
+screen=pygame.display.set_mode((1600,800))
+pygame.display.set_caption("Ronaldo Versus Spiders Game")
+icon = pygame.image.load('icon.png')
+pygame.display.set_icon(icon)
+def display_score():
+    current_time=pygame.time.get_ticks()-start_time
+    score=font.render(f'Score: {current_time // 1000}',True,(255,255,10))
+    screen.blit(score,(700,200))
+    return current_time // 1000
+player_img=pygame.image.load("player.png").convert_alpha()
+player_img=pygame.transform.scale(player_img,(100,100))
+player_rect=player_img.get_rect(center=(100,630))
+enemy_img=pygame.image.load("enemy.png").convert_alpha()
+enemy_img=pygame.transform.scale(enemy_img,(100,100))
+enemy_rect=enemy_img.get_rect(center=(1500,630))
+bgr=pygame.image.load("background.jpg").convert_alpha()
+bgr=pygame.transform.scale(bgr,(1600,800))
+font=pygame.font.Font("font.otf",30)
+text=font.render("Ronaldo versus Spiders",True,(255,255,10))
+gravity=10
+jump_sound = pygame.mixer.Sound("jump_sound.mp3")
+jump_sound.set_volume(0.3)
+scream_sound=pygame.mixer.Sound("scream_sound.wav")
+scream_sound.set_volume(0.3)
+game_active=True
+clock=pygame.time.Clock()
+start_time=0
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            pygame.quit()
+        if game_active: 
+            if event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_SPACE and player_rect.centery==630:
+                    gravity=-23
+                    jump_sound.play()
+              
+        else:
+            if event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_SPACE:
+                    game_active=True
+                    enemy_rect.centerx=1600
+                    start_time=pygame.time.get_ticks()
+                    
+    if game_active:    
+       
+        screen.blit(bgr,(0,0))
+        score=display_score()
+        gravity+=1
+        player_rect.centery+=gravity
+        if player_rect.centery>=630:
+            player_rect.centery=630
+        screen.blit(player_img,player_rect)
+        enemy_rect.centerx-=10
+        if enemy_rect.centerx<=-100:
+            enemy_rect.centerx=1600
+        if player_rect.colliderect(enemy_rect):
+            game_active=False
+            scream_sound.play()
+        screen.blit(enemy_img,enemy_rect)
+    else:
+        screen.fill((0,0,0))
+        textlose=font.render("YOU DEAD",True,"white")
+        tryagaintext=font.render("Press Space to play again",True,"red")
+       
+        scoretext=font.render(f'Your score is: {score}',True,"blue")
+        screen.blit(scoretext,(660,300))
+        screen.blit(textlose,(700,400))
+        screen.blit(tryagaintext,(600,500))
+    clock.tick(60)
+    pygame.display.flip()
+
+
+    </p>
+</body>
+</html>
